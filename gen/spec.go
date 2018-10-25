@@ -6,6 +6,7 @@ import (
 )
 
 const (
+	//errcheck = "\nif err != nil { _, f, l, _ := runtime.Caller(0)\nerr = fmt.Errorf(\"[%v:%v] %v\", f, l, err)\nreturn }"
 	errcheck    = "\nif err != nil { return }"
 	lenAsUint32 = "uint32(len(%s))"
 	literalFmt  = "%s"

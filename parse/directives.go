@@ -8,7 +8,7 @@ import (
 	"github.com/tinylib/msgp/gen"
 )
 
-const linePrefix = "//msgp:"
+const linePrefix string = "//msgp:"
 
 // func(args, fileset)
 type directive func([]string, *FileSet) error
@@ -84,6 +84,8 @@ func applyShim(text []string, f *FileSet) error {
 			be.ShimMode = gen.Cast
 		case "convert":
 			be.ShimMode = gen.Convert
+		case "serialize":
+			be.ShimMode = gen.Serialize
 		default:
 			return fmt.Errorf("invalid shim mode; found %s, expected 'cast' or 'convert", modestr)
 		}

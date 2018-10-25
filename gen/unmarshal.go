@@ -118,7 +118,11 @@ func (u *unmarshalGen) gBase(b *BaseElem) {
 	if b.Convert {
 		// begin 'tmp' block
 		refname = randIdent()
-		lowered = b.ToBase() + "(" + lowered + ")"
+		if b.ShimMode == Serialize {
+			lowered = refname
+		} else {
+			lowered = b.ToBase() + "(" + lowered + ")"
+		}
 		u.p.printf("\n{\nvar %s %s", refname, b.BaseType())
 	}
 
@@ -138,6 +142,9 @@ func (u *unmarshalGen) gBase(b *BaseElem) {
 		// close 'tmp' block
 		if b.ShimMode == Cast {
 			u.p.printf("\n%s = %s(%s)\n", b.Varname(), b.FromBase(), refname)
+		} else if b.ShimMode == Serialize {
+			u.p.printf("\nerr = %s(%s, %s)", b.FromBase(), refname, b.Varname())
+			u.p.print(errcheck)
 		} else {
 			u.p.printf("\n%s, err = %s(%s)", b.Varname(), b.FromBase(), refname)
 			u.p.print(errcheck)

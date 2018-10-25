@@ -128,7 +128,11 @@ func (d *decodeGen) gBase(b *BaseElem) {
 	switch b.Value {
 	case Bytes:
 		if b.Convert {
-			d.p.printf("\n%s, err = dc.ReadBytes([]byte(%s))", tmp, vname)
+			if b.ShimMode == Serialize {
+				d.p.printf("\n%s, err = dc.ReadBytes(%s)", tmp, tmp)
+			} else {
+				d.p.printf("\n%s, err = dc.ReadBytes([]byte(%s))", tmp, vname)
+			}
 		} else {
 			d.p.printf("\n%s, err = dc.ReadBytes(%s)", vname, vname)
 		}
@@ -149,6 +153,9 @@ func (d *decodeGen) gBase(b *BaseElem) {
 	if b.Convert {
 		if b.ShimMode == Cast {
 			d.p.printf("\n%s = %s(%s)\n}", vname, b.FromBase(), tmp)
+		} else if b.ShimMode == Serialize {
+			d.p.printf("\nerr = %s(%s, %s)\n}", b.FromBase(), tmp, vname)
+			d.p.print(errcheck)
 		} else {
 			d.p.printf("\n%s, err = %s(%s)\n}", vname, b.FromBase(), tmp)
 			d.p.print(errcheck)

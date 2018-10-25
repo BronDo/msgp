@@ -200,7 +200,13 @@ func (s *sizeGen) gBase(b *BaseElem) {
 	} else {
 		vname := b.Varname()
 		if b.Convert {
-			vname = tobaseConvert(b)
+			if b.ShimMode == Serialize {
+				vname = randIdent()
+				s.p.printf("\nvar %s %s", vname, b.BaseType())
+				s.p.printf("\n%s, _ = %s(%s)", vname, b.ToBase(), b.Varname())
+			} else {
+				vname = tobaseConvert(b)
+			}
 		}
 		s.addConstant(basesizeExpr(b.Value, vname, b.BaseName()))
 	}

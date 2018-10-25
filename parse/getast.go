@@ -342,14 +342,25 @@ func (fs *FileSet) getField(f *ast.Field) []gen.StructField {
 			body = reflect.StructTag(strings.Trim(f.Tag.Value, "`")).Get("msgpack")
 		}
 		tags := strings.Split(body, ",")
-		if len(tags) == 2 && tags[1] == "extension" {
-			extension = true
+		for _, tag := range tags {
+			// ignore "-" fields
+			if tag == "-" {
+				return nil
+			} else if tag == "extension" {
+				extension = true
+			}
+			sp := strings.Index(tag, "=")
+			if sp >= 0 {
+				switch tag[:sp] {
+				case "name":
+					// ignore "-" fields
+					if tag[sp+1:] == "-" {
+						return nil
+					}
+					sf[0].FieldTag = tag[sp+1:]
+				}
+			}
 		}
-		// ignore "-" fields
-		if tags[0] == "-" {
-			return nil
-		}
-		sf[0].FieldTag = tags[0]
 		sf[0].RawTag = f.Tag.Value
 	}
 

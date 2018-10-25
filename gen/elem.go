@@ -416,6 +416,7 @@ type ShimMode int
 const (
 	Cast ShimMode = iota
 	Convert
+	Serialize
 )
 
 // BaseElem is an element that

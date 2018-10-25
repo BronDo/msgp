@@ -190,7 +190,7 @@ func (m *marshalGen) gBase(b *BaseElem) {
 			vname = randIdent()
 			m.p.printf("\nvar %s %s", vname, b.BaseType())
 			m.p.printf("\n%s, err = %s", vname, tobaseConvert(b))
-			m.p.printf(errcheck)
+			m.p.print(errcheck)
 		}
 	}
 
